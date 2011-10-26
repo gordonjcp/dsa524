@@ -71,12 +71,30 @@ class DSA:
         else: return
         return res
         
-     
+def writebinary(d):
+    out = d.getmem(1)
+    
+    out = out.split(",")
+    f = open("temp.bin", "w")
         
+    while out[0] != " OK":
+        d = "%d" % eval("0x"+out[0])
+        print d
+        f.write("%c" % int(d))
+        
+        
+        out = out[1:]
+    f.close()
+
+    
+
+
 if __name__ == '__main__':
     d = DSA()
 
     ch1 = d.getchannel(1)    
     print ch1.vrange
+
+    writebinary(d)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
