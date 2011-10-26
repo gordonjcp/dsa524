@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import serial
+import time
 
 PORT = "/dev/ttyUSB0"
 SPEED = 38400
@@ -16,7 +17,7 @@ class Channel():
 class DSA:
     """ Connect to a Thurlby DSA524 and send data """
     status=""
-    ser = serial.Serial("/dev/ttyUSB0", 38400, xonxoff=1, rtscts=0)
+    ser = serial.Serial("/dev/ttyUSB0", 19200, xonxoff=1, rtscts=0)
 
 
         
@@ -29,7 +30,7 @@ class DSA:
             buf = buf + ch
     
     def command(self, cmd):
-        self.ser.write(cmd + " \r")
+        self.ser.write(cmd + "\r")
         return self.readln()
         
     def connect(self):
@@ -64,15 +65,18 @@ class DSA:
 
     def getmem(self, ch):
         print self.command("MODE,HEX")
+        """
         if ch == 1:
             res = self.command("MEM?,AQU1")
         elif ch == 2:
             res = self.command("MEM?,AQU2")
-        else: return
+        else: return"""
+        res = self.command("MEM?,"+ch)
         return res
         
-def writebinary(d):
-    out = d.getmem(1)
+def getbinary(d,mem):
+    out = d.getmem(mem)
+    print out
     
     out = out.split(",")
     f = open("temp.bin", "w")
@@ -86,15 +90,33 @@ def writebinary(d):
         out = out[1:]
     f.close()
 
-    
+def putbinary(d):
+    print d.command("MODE,HEX")
 
+    print d.command("MEM,TRA")
+    #f = open("dump.hex", "w")
+    i=0
+    while i<1024:
+        j = "%02x," % int((i & 0xEf)*0.8375)
+        d.ser.write(j)
+        #f.write(j)
+        #print j,
+        i = i + 1
+        time.sleep(0.005)   # doesn't respect xon/xoff!
+    #f.write(" \r")
+    #f.close()
+    print i
+            
 
 if __name__ == '__main__':
     d = DSA()
 
-    ch1 = d.getchannel(1)    
-    print ch1.vrange
-
-    writebinary(d)
+    d.connect()
+    putbinary(d)
+    #getbinary(d,"2")
+    #ch1 = d.getchannel(1)    
+    #print ch1.vrange
+    
+    #getbinary(d)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
