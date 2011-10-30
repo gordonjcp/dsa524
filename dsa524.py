@@ -17,7 +17,7 @@ class Channel():
 class DSA:
     """ Connect to a Thurlby DSA524 and send data """
     status=""
-    ser = serial.Serial("/dev/ttyUSB0", 19200, xonxoff=1, rtscts=0)
+    ser = serial.Serial("/dev/ttyUSB0", 38400, xonxoff=1, rtscts=0)
 
 
         
@@ -93,18 +93,19 @@ def getbinary(d,mem):
 def putbinary(d):
     print d.command("MODE,HEX")
 
-    print d.command("MEM,TRA")
-    #f = open("dump.hex", "w")
+    print d.command("MEM,AQU1")
+    f = open("klick.bin","r")
     i=0
-    while i<1024:
-        j = "%02x," % int((i & 0xEf)*0.8375)
+    while i<4096:
+        k = f.read(1)
+        j = "%02x," % ord(k)
         d.ser.write(j)
         #f.write(j)
-        #print j,
+        print i,
         i = i + 1
         time.sleep(0.005)   # doesn't respect xon/xoff!
     #f.write(" \r")
-    #f.close()
+    f.close()
     print i
             
 
