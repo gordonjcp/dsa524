@@ -113,7 +113,9 @@ if __name__ == '__main__':
     d = DSA()
 
     d.connect()
-    putbinary(d)
+    string = ""
+    print d.command("TEXT,HELLO WORLD")
+    #putbinary(d)
     #getbinary(d,"2")
     #ch1 = d.getchannel(1)    
     #print ch1.vrange

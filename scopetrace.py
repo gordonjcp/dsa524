@@ -9,7 +9,7 @@ points = []
 info1 = ""
 tb = ""
 
-GRID = 74
+GRID = 48
 # Create a GTK+ widget on which we will draw using Cairo
 class Screen(gtk.DrawingArea):
 
@@ -109,7 +109,8 @@ if __name__ == "__main__":
 
     d = dsa524.DSA()
     d.connect()
-    p = d.command("MEM?,TRA")
+    #p = d.command("MEM?,TRA")
+    p = d.command("MEM?,2")
     p = p.split(",")
    
     i = d.command("CH1?")
@@ -123,6 +124,7 @@ if __name__ == "__main__":
     tb = ", ".join(tb)
     tb = "%s/div" % i[1]
     print tb
+    print i
     
 
     for i in p[:-1]:
